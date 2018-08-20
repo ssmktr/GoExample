@@ -1,11 +1,10 @@
 package main
 
 import (
-			"github.com/unrolled/render"
 	"fmt"
 )
 
-var renderer render.Render
+//var renderer render.Render
 
 func main() {
 
