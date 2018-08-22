@@ -1,21 +1,12 @@
 package main
 
 import (
-<<<<<<< HEAD
 	"net"
 	"fmt"
-)
-=======
-		"net/http"
 	"github.com/unrolled/render"
 )
 
 var renderer render.Render
->>>>>>> bf8bb35bd3d26cdfe22944fd0c2846f39717882e
-
-func main() {
-	onServer()
-}
 
 func onServer() {
 	listener, err := net.Listen("tcp", ":2305")
@@ -35,7 +26,6 @@ func onServer() {
 
 		fmt.Printf("Connect remoteAddr : %v, localAddr : %v\n", conn.RemoteAddr().String(), conn.LocalAddr().String())
 
-<<<<<<< HEAD
 		go func (conn net.Conn) {
 			data := make([]byte, 1024)
 
@@ -57,15 +47,10 @@ func onServer() {
 			}
 		}(conn)
 	}
-=======
-	//fmt.Println("SSMKTR")
+}
 
-	http.HandleFunc("/", func (res http.ResponseWriter, req *http.Request) {
-		renderer.Text(res, http.StatusOK, "HI TONY?")
-	})
-
-	http.ListenAndServe(":2305", nil)
->>>>>>> bf8bb35bd3d26cdfe22944fd0c2846f39717882e
+func main() {
+	onServer()
 }
 
 
