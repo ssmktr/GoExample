@@ -54,12 +54,16 @@ func main() {
 }
 
 func testMysql() {
-	conn, err := sql.Open("mysql", "root@localhost/db_test")
+	fmt.Println("===== mysql start =====")
+	conn, err := sql.Open("mysql", "root:ball2305@tcp(localhost)/db_test")
 	if err != nil {
-		fmt.Errorf("Error mysql open : %v\n", err)
+		fmt.Printf("Error mysql open : %v\n", err)
 		return
 	}
-	defer conn.Close()
+	defer func() {
+		conn.Close()
+		fmt.Println("===== mysql finish =====")
+	}()
 
 	fmt.Println("Success mysql open")
 }
