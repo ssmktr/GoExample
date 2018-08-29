@@ -4,6 +4,7 @@ import (
 	"net"
 	"fmt"
 	"github.com/unrolled/render"
+	"database/sql"
 )
 
 var renderer render.Render
@@ -50,7 +51,19 @@ func onServer() {
 }
 
 func main() {
-	onServer()
+	//onServer()
+	testMysql()
+}
+
+func testMysql() {
+	conn, err := sql.Open("mysql", "root@localhost/db_test")
+	if err != nil {
+		fmt.Errorf("Error mysql open : %v\n", err)
+		return
+	}
+	defer conn.Close()
+
+	fmt.Println("Success mysql open")
 }
 
 
