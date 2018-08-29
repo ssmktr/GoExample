@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"time"
 )
 
 //var renderer render.Render
@@ -87,6 +88,15 @@ func testMysql() {
 		fmt.Printf("uid : %v, id : %v, pw : %v\n", uid, id, pw)
 	}
 
+	go conneded(conn)
+}
+
+func conneded(conn *sql.DB) {
+	for {
+		conn.Query("select 1")
+
+		time.Sleep(120)
+	}
 }
 
 
