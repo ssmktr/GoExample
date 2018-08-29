@@ -67,6 +67,15 @@ func testMysql() {
 	}()
 
 	fmt.Println("Success mysql open")
+
+	rows, err := conn.Query("show tables")
+	if err != nil {
+		fmt.Printf("Error show tables : %v\n", err)
+		return
+	}
+
+	rows.Next()
+	fmt.Println(rows)
 }
 
 
