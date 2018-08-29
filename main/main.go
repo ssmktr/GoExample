@@ -56,7 +56,7 @@ func main() {
 
 func testMysql() {
 	fmt.Println("===== mysql start =====")
-	conn, err := sql.Open("mysql", "root:ball2305@tcp(localhost)/db_test")
+	conn, err := sql.Open("mysql", "root:ball2305@tcp(localhost:3306)/db_test")
 	if err != nil {
 		fmt.Printf("Error mysql open : %v\n", err)
 		return
