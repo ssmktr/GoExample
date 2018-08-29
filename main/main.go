@@ -56,7 +56,7 @@ func main() {
 
 func testMysql() {
 	fmt.Println("===== mysql start =====")
-	conn, err := sql.Open("mysql", "root:ball2305@tcp(localhost:3306)/db_test")
+	conn, err := sql.Open("mysql", "root:ball2305@tcp(localhost:3306	)/db_test")
 	if err != nil {
 		fmt.Printf("Error mysql open : %v\n", err)
 		return
@@ -68,14 +68,25 @@ func testMysql() {
 
 	fmt.Println("Success mysql open")
 
-	rows, err := conn.Query("show tables")
+	rows, err := conn.Query("select uid, id, pw from tb_test")
 	if err != nil {
-		fmt.Printf("Error show tables : %v\n", err)
+		fmt.Printf("Error select tables : %v\n", err)
 		return
 	}
 
-	rows.Next()
-	fmt.Println(rows)
+	for rows.Next() {
+		var uid int
+		var id string
+		var pw string
+		err := rows.Scan(&uid, &id, &pw)
+		if err != nil {
+			fmt.Printf("Error Scan : %v\n", err)
+			return
+		}
+
+		fmt.Printf("uid : %v, id : %v, pw : %v\n", uid, id, pw)
+	}
+
 }
 
 
