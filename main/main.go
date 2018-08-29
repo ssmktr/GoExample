@@ -88,10 +88,10 @@ func testMysql() {
 		fmt.Printf("uid : %v, id : %v, pw : %v\n", uid, id, pw)
 	}
 
-	go conneded(conn)
+	conneting(conn)
 }
 
-func conneded(conn *sql.DB) {
+func conneting(conn *sql.DB) {
 	for {
 		conn.Query("select 1")
 
