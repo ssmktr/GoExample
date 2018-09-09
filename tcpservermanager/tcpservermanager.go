@@ -27,6 +27,7 @@ func OnServer() {
 
 		go onRead(conn)
 		go onWrite(conn)
+		
 	}
 }
 
