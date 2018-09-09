@@ -6,8 +6,11 @@ import (
 )
 
 var message string
+var bufferSize int
 
 func OnServer() {
+	bufferSize = 4096
+
 	listener, err := net.Listen("tcp", ":2305")
 	if err != nil {
 		fmt.Printf("Error listen : %v\n", err)
@@ -31,16 +34,20 @@ func OnServer() {
 }
 
 func onRead(conn net.Conn) {
-	data := make([]byte, 1024)
+	data := make([]byte, bufferSize)
 	for {
 		n, err := conn.Read(data)
 		if err != nil {
+			if err.Error() == "EOF" {
+				fmt.Printf("Discconect Conn : %v\n", err.Error())
+				return
+			}
+
 			fmt.Printf("Error Read : %v\n", err)
 			return
 		}
-
 		message = string(data[:n])
-		fmt.Println(message)
+		fmt.Printf("Read : %v\n", message)
 	}
 }
 
@@ -49,16 +56,15 @@ func onWrite(conn net.Conn) {
 		if len(message) <= 0 {
 			continue
 		}
-		
+
 		data := []byte(message)
 		_, err := conn.Write(data)
 		if err != nil {
 			fmt.Printf("Error Write : %v\n", err)
-			fmt.Printf("In Error : %v\n", message)
 			return
 		}
 
-		fmt.Printf("In Printf : %v\n", message)
-		message = "";
+		fmt.Printf("Write : %v\n", message)
+		message = ""
 	}
 }
