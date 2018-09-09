@@ -10,7 +10,7 @@ var message string
 func OnServer() {
 	listener, err := net.Listen("tcp", ":2305")
 	if err != nil {
-		fmt.Errorf("Error listen : %v\n", err)
+		fmt.Printf("Error listen : %v\n", err)
 		return
 	}
 	defer listener.Close()
@@ -18,7 +18,7 @@ func OnServer() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			fmt.Errorf("Error Accept : %v\n")
+			fmt.Printf("Error Accept : %v\n")
 			return
 		}
 		defer conn.Close()
@@ -27,7 +27,6 @@ func OnServer() {
 
 		go onRead(conn)
 		go onWrite(conn)
-		
 	}
 }
 
@@ -36,7 +35,7 @@ func onRead(conn net.Conn) {
 	for {
 		n, err := conn.Read(data)
 		if err != nil {
-			fmt.Errorf("Error Read : %v\n", err)
+			fmt.Printf("Error Read : %v\n", err)
 			return
 		}
 
@@ -46,12 +45,20 @@ func onRead(conn net.Conn) {
 }
 
 func onWrite(conn net.Conn) {
-	data := []byte(message)
-	_, err := conn.Write(data)
-	if err != nil {
-		fmt.Errorf("Error Write : %v\n", err)
-		return
-	}
+	for {
+		if len(message) <= 0 {
+			continue
+		}
+		
+		data := []byte(message)
+		_, err := conn.Write(data)
+		if err != nil {
+			fmt.Printf("Error Write : %v\n", err)
+			fmt.Printf("In Error : %v\n", message)
+			return
+		}
 
-	fmt.Println(message)
+		fmt.Printf("In Printf : %v\n", message)
+		message = "";
+	}
 }
