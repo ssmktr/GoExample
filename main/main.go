@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"GoExample/tcpservermanager"
+	"GoExample/httpservermanager"
 )
 
 func main() {
-	tcpservermanager.OnServer()
+	httpservermanager.OnHttpServer()
+	//tcpservermanager.OnServer()
 	//testMysql()
 }
 
