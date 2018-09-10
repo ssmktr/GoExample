@@ -25,7 +25,6 @@ func OnHttpServer() {
 		json.Unmarshal([]byte(string(data[:n])), &res_pack)
 
 		fmt.Println(string(data[:n]))
-		fmt.Println(res_pack.Id)
 
 		bytes, _ := json.Marshal(res_pack)
 
