@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	httpservermanager.OnHttpServer()
+	httpservermanager.RunHttpServer()
 	//tcpservermanager.OnServer()
 	//testMysql()
 }

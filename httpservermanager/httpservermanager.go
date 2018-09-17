@@ -3,33 +3,46 @@ package httpservermanager
 import (
 	"net/http"
 	"github.com/unrolled/render"
-	"fmt"
-	"encoding/json"
+			"sync"
+	"database/sql"
 )
-
-type signupPacket struct {
-	Uid string
-	Id string
-	Pw string
-	Nickname string
-}
 
 var renderer render.Render
 
-func OnHttpServer() {
+type mysqlConnDBType int
 
-	http.HandleFunc("/signup", func(res http.ResponseWriter, req *http.Request) {
-		data := make([]byte, 2048)
-		n, _ := req.Body.Read(data)
-		var res_pack signupPacket
-		json.Unmarshal([]byte(string(data[:n])), &res_pack)
+const (
+	MYSQL_Accountinfo mysqlConnDBType = iota
+)
 
-		fmt.Println(string(data[:n]))
+type httpManager struct {
+	mtx sync.Mutex
+	connMap map[mysqlConnDBType]*sql.DB
+}
 
-		bytes, _ := json.Marshal(res_pack)
+func New() *httpManager {
+	return &httpManager{
+		connMap:make(map[mysqlConnDBType]*sql.DB),
+	}
+}
 
-		renderer.Data(res, http.StatusOK, bytes)
-	})
+func (hm *httpManager) makeMysqlConn(dbType mysqlConnDBType, conn *sql.DB) {
+	if _, ok := hm.connMap[dbType]; !ok {
+		hm.connMap[dbType] = conn
+	}
+}
+
+func (hm *httpManager) getMysqlConn(dbType mysqlConnDBType) *sql.DB {
+	if conn, ok := hm.connMap[dbType]; ok {
+		return conn
+	}
+	return nil
+}
+
+func RunHttpServer() {
+	hm := New()
+	http.HandleFunc("/signup", hm.httpHandle_Signup)
+	http.HandleFunc("/login", hm.httpHandle_Login)
 
 	http.ListenAndServe(":2305", nil)
 }
