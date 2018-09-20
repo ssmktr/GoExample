@@ -59,13 +59,6 @@ func (hm *httpManager) call_Select_Login(req req_LoginPacket) (rsp_LoginPacket, 
 	}
 
 	curDate := time.Now().UTC()
-	result, err := conn.Exec("update accountinfo set lastlogindate=? where uid=?", curDate, rsp.Uid)
-	if err != nil {
-		rsp.Error = gamedata.EC_UnknownError
-		return rsp, fmt.Errorf("Error mysql update : %v", err)
-	}
-	_ = result
-
 	rowCnt := 0
 	for rows.Next() {
 		err := rows.Scan(&rsp.Uid, &rsp.Id, &rsp.Lastlogindate)
@@ -76,6 +69,13 @@ func (hm *httpManager) call_Select_Login(req req_LoginPacket) (rsp_LoginPacket, 
 		}
 		rowCnt++
 	}
+
+	result, err := conn.Exec("update accountinfo set lastlogindate=? where uid=?", curDate, rsp.Uid)
+	if err != nil {
+		rsp.Error = gamedata.EC_UnknownError
+		return rsp, fmt.Errorf("Error mysql update : %v", err)
+	}
+	_ = result
 	rsp.Lastlogindate = curDate.String()
 
 	if rowCnt == 0 || rowCnt > 1 {
