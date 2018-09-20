@@ -21,7 +21,7 @@ func (hm *httpManager) httpHandle_Login(res http.ResponseWriter, req *http.Reque
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Printf("rsp : %v", res_pack)
+		fmt.Printf("rsp : %v\n", res_pack)
 	}
 	bytes, _ := json.Marshal(res_pack)
 
