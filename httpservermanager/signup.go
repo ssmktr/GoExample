@@ -28,11 +28,11 @@ func (hm *httpManager) httpHandle_Signup(res http.ResponseWriter, req *http.Requ
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *httpManager) call_Insert_Signup(req req_SignupPacket) (rsp_SignupPacket, error) {
+func (hm *httpManager) call_Select_Signup(req req_SignupPacket) (*rsp_SignupPacket, error) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 
-	rsp := rsp_SignupPacket{}
+	rsp := &rsp_SignupPacket{}
 
 	conn, ok := hm.connMap[MYSQL_Accountinfo]
 	if !ok {
@@ -52,14 +52,65 @@ func (hm *httpManager) call_Insert_Signup(req req_SignupPacket) (rsp_SignupPacke
 	}
 	defer tx.Rollback()
 
-	rows, err := conn.Query("select * from accountinfo where id=? && logintype=?", req.Id, req.LoginType)
+	rows, err := conn.Query("select uid, id, logintype, lastlogindate from accountinfo where id=? && logintype=?", req.Id, req.LoginType)
 	if err != nil {
 		rsp.Error = gamedata.EC_UnknownError
 		fmt.Printf("Error mysql select : %v", err)
 		return rsp, fmt.Errorf("Error mysql select : %v", err)
 	}
 
-	if rows.Next() {
+	for rows.Next() {
+		err := rows.Scan(&rsp.Uid, &rsp.Id, &rsp.LoginType, &rsp.Lastlogindate)
+		if err != nil {
+			rsp.Error = gamedata.EC_UnknownError
+			fmt.Println(err)
+			return rsp, fmt.Errorf("Error mysql scan : %v", err)
+		}
+	}
+
+	curDate := time.Now().UTC()
+	result, err := conn.Exec("update accountinfo set lastlogindate=? where id=? && logintype=?", req.Id, req.LoginType)
+	if err != nil {
+		rsp.Error = gamedata.EC_UnknownError
+		return rsp, fmt.Errorf("Error mysql update : %v", err)
+	}
+	_ = result
+	rsp.Lastlogindate = curDate.String()
+
+	return rsp, nil
+}
+
+func (hm *httpManager) call_Insert_Signup(req req_SignupPacket) (*rsp_SignupPacket, error) {
+	hm.mtx.Lock()
+	defer hm.mtx.Unlock()
+
+	rsp := &rsp_SignupPacket{}
+
+	conn, ok := hm.connMap[MYSQL_Accountinfo]
+	if !ok {
+		conn1, err := sql.Open("mysql", "root:ball2305@tcp(localhost:3306)/englishwordgame")
+		if err != nil {
+			rsp.Error = gamedata.EC_UnknownError
+			return rsp, fmt.Errorf("Error mysql conn : %v", err)
+		}
+		hm.makeMysqlConn(MYSQL_Accountinfo, conn1)
+		conn = conn1
+	}
+
+	tx, err := conn.Begin()
+	if err != nil {
+		rsp.Error = gamedata.EC_MysqlConnectFail
+		return rsp, fmt.Errorf("Error mysql conn begin : %v", err)
+	}
+	defer tx.Rollback()
+
+	if rsp, err := hm.call_Select_Signup(req); err != nil {
+		if err != nil {
+			rsp.Error = gamedata.EC_UnknownError
+			fmt.Printf("Error mysql select : %v", err)
+			return rsp, fmt.Errorf("Error mysql select : %v", err)
+		}
+	} else if rsp != nil {
 		rsp.Error = gamedata.EC_AlreadyAccount
 		return rsp, fmt.Errorf("Error alreay account id : %v, logintype : %v", req.Id, req.LoginType)
 	}
@@ -81,8 +132,8 @@ func (hm *httpManager) call_Insert_Signup(req req_SignupPacket) (rsp_SignupPacke
 	rsp.Error = gamedata.EC_Success
 	rsp.Uid = req.Uid
 	rsp.Id = req.Id
-	rsp.Lastlogindate = curDate
-	rsp.Createdate = curDate
+	rsp.LoginType = req.LoginType
+	rsp.Lastlogindate = curDate.String()
 
 	return rsp, nil
 }

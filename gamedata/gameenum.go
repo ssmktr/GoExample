@@ -7,6 +7,7 @@ const (
 	LT_FaceBook LT_LoginType = 3
 )
 
+type EC_ErrorCode int
 const (
 	EC_Success = 0						// 성공
 	EC_UnknownError = 1				// 알수 없는 에러
