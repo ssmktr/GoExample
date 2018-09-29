@@ -4,15 +4,15 @@ import (
 	"GoExample/gamedata"
 )
 
-// 회원 가입 요청
-type req_SignupPacket struct {
+// 계정 인증 요청
+type req_AuthPacket struct {
 	Uid       string
 	Id        string
 	LoginType gamedata.LT_LoginType
 }
 
-// 회원 가입 응답
-type rsp_SignupPacket struct {
+// 계정 인증 응답
+type rsp_AuthPacket struct {
 	Error         gamedata.EC_ErrorCode
 	Uid           string
 	Id            string

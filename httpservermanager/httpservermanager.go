@@ -1,10 +1,10 @@
 package httpservermanager
 
 import (
-	"net/http"
-	"github.com/unrolled/render"
-			"sync"
 	"database/sql"
+	"github.com/unrolled/render"
+	"net/http"
+	"sync"
 )
 
 var renderer render.Render
@@ -16,13 +16,13 @@ const (
 )
 
 type httpManager struct {
-	mtx sync.Mutex
+	mtx     sync.Mutex
 	connMap map[mysqlConnDBType]*sql.DB
 }
 
 func New() *httpManager {
 	return &httpManager{
-		connMap:make(map[mysqlConnDBType]*sql.DB),
+		connMap: make(map[mysqlConnDBType]*sql.DB),
 	}
 }
 
@@ -41,8 +41,8 @@ func (hm *httpManager) getMysqlConn(dbType mysqlConnDBType) *sql.DB {
 
 func RunHttpServer() {
 	hm := New()
-	http.HandleFunc("/signup", hm.httpHandle_Signup)
+	http.HandleFunc("/auth", hm.httpHandle_Auth)
 	http.HandleFunc("/login", hm.httpHandle_Login)
-
+	
 	http.ListenAndServe(":2305", nil)
 }
