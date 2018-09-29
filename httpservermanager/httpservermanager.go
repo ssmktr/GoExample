@@ -13,6 +13,7 @@ type mysqlConnDBType int
 
 const (
 	MYSQL_Accountinfo mysqlConnDBType = iota
+	MYSQL_UserInfo
 )
 
 type httpManager struct {
@@ -43,6 +44,7 @@ func RunHttpServer() {
 	hm := New()
 	http.HandleFunc("/auth", hm.httpHandle_Auth)
 	http.HandleFunc("/login", hm.httpHandle_Login)
+	http.HandleFunc("/getuserinfo", hm.httpHandle_GetUserInfo)
 	
 	http.ListenAndServe(":2305", nil)
 }

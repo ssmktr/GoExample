@@ -8,6 +8,7 @@ import (
 type req_AuthPacket struct {
 	Uid       string
 	Id        string
+	NickName  string
 	LoginType gamedata.LT_LoginType
 }
 
@@ -36,13 +37,16 @@ type rsp_LoginPacket struct {
 	Lastlogindate string
 }
 
+// 유저 정보 요청
+type req_GetUserInfoPacket struct {
+	Uid string
+}
 
-// // 로그인 응답
-// type rsp_LoginPacket struct {
-// 	Error    gamedata.EC_ErrorCode
-// 	Uid      string
-// 	NickName string
-// 	Energy   int
-// 	Gold     int
-// 	Heart    int
-// }
+// 유저 정보 응답
+type rsp_GetUserInfoPacket struct {
+	Error    gamedata.EC_ErrorCode
+	NickName string
+	Energy   int
+	Gold     int
+	Heart    int
+}

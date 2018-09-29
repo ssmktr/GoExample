@@ -129,6 +129,11 @@ func (hm *httpManager) call_Insert_Auth(req req_AuthPacket) (*rsp_AuthPacket, er
 		return rsp, fmt.Errorf("auth error mysql insert : %v", err)
 	}
 	_ = result
+	
+	if err := hm.call_Insert_UserInfo(req.Uid, req.NickName); err != nil {
+		rsp.Error = gamedata.EC_Table_Insert
+		return rsp, err
+	}
 
 	rsp.Error = gamedata.EC_Success
 	rsp.Uid = req.Uid
