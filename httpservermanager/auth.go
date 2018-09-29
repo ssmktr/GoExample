@@ -111,7 +111,7 @@ func (hm *httpManager) call_Insert_Auth(req req_AuthPacket) (*rsp_AuthPacket, er
 			fmt.Printf("Error mysql select : %v", err)
 			return rsp, fmt.Errorf("auth error mysql select : %v", err)
 		}
-	} else if rsp != nil {
+	} else if rsp != nil && rsp.Id != "" {
 		rsp.Error = gamedata.EC_AlreadyAccount
 		return rsp, fmt.Errorf("auth alreay account id : %v, logintype : %v", req.Id, req.LoginType)
 	}

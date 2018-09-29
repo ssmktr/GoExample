@@ -22,15 +22,27 @@ type rsp_AuthPacket struct {
 
 // 로그인 요청
 type req_LoginPacket struct {
-	Uid string
+	Uid       string
+	Id        string
+	LoginType gamedata.LT_LoginType
 }
 
 // 로그인 응답
 type rsp_LoginPacket struct {
-	Error    gamedata.EC_ErrorCode
-	Uid      string
-	NickName string
-	Energy   int
-	Gold     int
-	Heart    int
+	Error         gamedata.EC_ErrorCode
+	Uid           string
+	Id            string
+	LoginType     gamedata.LT_LoginType
+	Lastlogindate string
 }
+
+
+// // 로그인 응답
+// type rsp_LoginPacket struct {
+// 	Error    gamedata.EC_ErrorCode
+// 	Uid      string
+// 	NickName string
+// 	Energy   int
+// 	Gold     int
+// 	Heart    int
+// }
