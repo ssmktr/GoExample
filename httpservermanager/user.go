@@ -51,7 +51,7 @@ func (hm *httpManager) call_Select_UserInfo(req req_GetUserInfoPacket) (*rsp_Get
 	}
 	defer tx.Rollback()
 	
-	rows, err := conn.Query("select nickname, energy, gold, heart from userinfo where uid=? && logintype=?", req.Uid)
+	rows, err := conn.Query("select nickname, energy, gold, heart from userinfo where uid=?", req.Uid)
 	if err != nil {
 		rsp.Error = gamedata.EC_UnknownError
 		return rsp, fmt.Errorf("userinfo error mysql select : %v", err)
