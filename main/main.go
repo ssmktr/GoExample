@@ -1,6 +1,7 @@
 package main
 
 import (
+	"GoExample/gametabledata"
 	"fmt"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
@@ -8,6 +9,7 @@ import (
 	)
 
 func main() {
+	gametabledata.RunGameTableDataServer()
 	httpservermanager.RunHttpServer()
 	//tcpservermanager.OnServer()
 	//testMysql()
