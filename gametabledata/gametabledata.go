@@ -79,7 +79,7 @@ func (gtd *GameTableDataManager) HttpHandle_load_englishworddata(res http.Respon
 		fmt.Println(err)
 	} else {
 		res_pack.Datas = string(bytess)
-		fmt.Printf("load_englishworddata rsp : %v\n", res_pack)
+		fmt.Printf("load_englishworddata rsp : success.\n")
 	}
 	
 	bytes, _ := json.Marshal(res_pack)
@@ -106,7 +106,7 @@ func (gtd *GameTableDataManager) HttpHandle_load_localizationdata(res http.Respo
 		fmt.Println(err)
 	} else {
 		res_pack.Datas = string(bytess)
-		fmt.Printf("load_localizationdata rsp : %v\n", res_pack)
+		fmt.Printf("load_localizationdata rsp : success.\n")
 	}
 	
 	bytes, _ := json.Marshal(res_pack)
