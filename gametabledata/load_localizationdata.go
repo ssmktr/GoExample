@@ -54,7 +54,6 @@ func (gtd *GameTableDataManager) Load_LocalizationData() error {
 					if err != nil {
 						return fmt.Errorf("Error localization data index type : %v", err)
 					}
-					fmt.Println(cell.String())
 					index = _index
 				case 1:
 					ko = cell.String()
