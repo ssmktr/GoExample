@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestLoadEnglishWordDataFile(t *testing.T) {
+func TestLoadEnglishWordData(t *testing.T) {
 	gtd := New()
 	gtd.allLoadData()
 	for _, data := range gtd.englishWordSlice {

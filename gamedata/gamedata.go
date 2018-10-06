@@ -30,3 +30,7 @@ const (
 	EC_Table_Update      = 8 // 테이블에 Update 에러
 )
 
+const (
+	TableDataPath = "../gametabledata/"
+	BufferSize = 4096
+)

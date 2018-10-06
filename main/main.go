@@ -25,6 +25,7 @@ func main() {
 		gm.httpServerManager.RunHttpServer()
 		
 		http.HandleFunc("/load_englishworddata", gm.gameTableManager.HttpHandle_load_englishworddata)
+		http.HandleFunc("/load_localizationdata", gm.gameTableManager.HttpHandle_load_localizationdata)
 		
 		http.HandleFunc("/auth", gm.httpServerManager.HttpHandle_Auth)
 		http.HandleFunc("/login", gm.httpServerManager.HttpHandle_Login)

@@ -12,10 +12,9 @@ type englishWordData struct {
 	Korea   string
 }
 
-func (gtd *GameTableDataManager) Load_EnglishWordDataFile() error {
+func (gtd *GameTableDataManager) Load_EnglishWordData() error {
 	isReadData := gamedata.RTT_None
-	
-	fileName := "../gametabledata/englishworddata.xlsx"
+	fileName := gamedata.TableDataPath + "englishworddata.xlsx"
 	xlsData, err := xlsx.OpenFile(fileName)
 	if err != nil {
 		return fmt.Errorf("Error ReadFile : %v\n", err)
@@ -31,6 +30,18 @@ func (gtd *GameTableDataManager) Load_EnglishWordDataFile() error {
 				continue
 			}
 			
+			checkRead := row.Cells[0].String()
+			if checkRead == "@" {
+				isReadData = gtd.changeReadTableType(isReadData)
+				continue
+			}
+			if isReadData == gamedata.RTT_None {
+				continue
+			}
+			if isReadData == gamedata.RTT_ReadFinish {
+				break
+			}
+			
 			englishData := ""
 			koreaData := ""
 			for cellIdx, cell := range row.Cells {
@@ -42,23 +53,12 @@ func (gtd *GameTableDataManager) Load_EnglishWordDataFile() error {
 				}
 			}
 			
-			if englishData == "@" {
-				isReadData = gtd.changeReadTableType(isReadData)
-				continue
-			}
-			if isReadData == gamedata.RTT_None {
-				continue
-			}
-			if isReadData == gamedata.RTT_ReadFinish {
-				break
-			}
-			
 			if englishData == "" {
-				return fmt.Errorf(" empty english data : %v", englishData)
+				return fmt.Errorf("Error empty english data : %v", englishData)
 			}
 			
 			if koreaData == "" {
-				return fmt.Errorf(" empty korea data : %v", koreaData)
+				return fmt.Errorf("Error empty korea data : %v", koreaData)
 			}
 			
 			data := &englishWordData{

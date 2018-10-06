@@ -13,13 +13,15 @@ import (
 var renderer render.Render
 
 type GameTableDataManager struct {
-	mtx     sync.Mutex
+	mtx sync.Mutex
 	
-	englishWordSlice []*englishWordData
+	englishWordSlice    []*englishWordData
+	localizationDataMap map[int]*localizationData
 }
 
 func New() *GameTableDataManager {
 	return &GameTableDataManager{
+		localizationDataMap: make(map[int]*localizationData),
 	}
 }
 
@@ -35,7 +37,10 @@ func (gtd *GameTableDataManager) changeReadTableType(_type gamedata.RTT_ReadTabl
 }
 
 func (gtd *GameTableDataManager) allLoadData() error {
-	if err := gtd.Load_EnglishWordDataFile(); err != nil {
+	if err := gtd.Load_EnglishWordData(); err != nil {
+		return err
+	}
+	if err := gtd.Load_LocalizationData(); err != nil {
 		return err
 	}
 	
@@ -59,7 +64,7 @@ func (gtd *GameTableDataManager) HttpHandle_load_englishworddata(res http.Respon
 	gtd.mtx.Lock()
 	defer gtd.mtx.Unlock()
 	
-	data := make([]byte, 2048)
+	data := make([]byte, gamedata.BufferSize)
 	n, _ := req.Body.Read(data)
 	var req_pack httpservermanager.Req_EnglishWordData
 	json.Unmarshal([]byte(string(data[:n])), &req_pack)
@@ -82,11 +87,29 @@ func (gtd *GameTableDataManager) HttpHandle_load_englishworddata(res http.Respon
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-// func (gtd *GameTableDataManager) GetTypeByString(_type string) reflect.Type {
-// 	switch _type {
-// 	case "string":
-// 		return reflect.Type(int)
-// 	}
-//
-// 	return nil
-// }
+func (gtd *GameTableDataManager) HttpHandle_load_localizationdata(res http.ResponseWriter, req *http.Request) {
+	gtd.mtx.Lock()
+	defer gtd.mtx.Unlock()
+	
+	data := make([]byte, gamedata.BufferSize)
+	n, _ := req.Body.Read(data)
+	var req_pack httpservermanager.Req_LocalizationData
+	json.Unmarshal([]byte(string(data[:n])), &req_pack)
+	
+	fmt.Printf("load_localizationdata req = %v\n", string(data[:n]))
+	
+	res_pack := &httpservermanager.Rsp_LocalizationData{}
+	
+	bytess, err := gtd.GetJsonByLocalizationDataMap()
+	if err != nil {
+		res_pack.Error = gamedata.EC_NotFoundTableInfo
+		fmt.Println(err)
+	} else {
+		res_pack.Datas = string(bytess)
+		fmt.Printf("load_localizationdata rsp : %v\n", res_pack)
+	}
+	
+	bytes, _ := json.Marshal(res_pack)
+	
+	renderer.Data(res, http.StatusOK, bytes)
+}

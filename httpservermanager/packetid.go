@@ -16,6 +16,17 @@ type Rsp_EnglishWordData struct {
 	Datas string
 }
 
+// Localization 데이터 요청
+type Req_LocalizationData struct {
+	Uid string
+}
+
+// Localization 데이터 응답
+type Rsp_LocalizationData struct {
+	Error gamedata.EC_ErrorCode
+	Datas string
+}
+
 // 계정 인증 요청
 type Req_AuthPacket struct {
 	Uid       string
