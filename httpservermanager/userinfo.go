@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (hm *httpManager) httpHandle_GetUserInfo(res http.ResponseWriter, req *http.Request) {
+func (hm *HttpServerManager) httpHandle_GetUserInfo(res http.ResponseWriter, req *http.Request) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 	
@@ -30,7 +30,7 @@ func (hm *httpManager) httpHandle_GetUserInfo(res http.ResponseWriter, req *http
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *httpManager) call_Select_UserInfo(req req_GetUserInfoPacket) (*rsp_GetUserInfoPacket, error) {
+func (hm *HttpServerManager) call_Select_UserInfo(req req_GetUserInfoPacket) (*rsp_GetUserInfoPacket, error) {
 	rsp := &rsp_GetUserInfoPacket{}
 	
 	conn, ok := hm.connMap[MYSQL_UserInfo]
@@ -76,7 +76,7 @@ func (hm *httpManager) call_Select_UserInfo(req req_GetUserInfoPacket) (*rsp_Get
 	return rsp, nil
 }
 
-func (hm *httpManager) call_Insert_UserInfo(uid, nickname string) error {
+func (hm *HttpServerManager) call_Insert_UserInfo(uid, nickname string) error {
 	conn, ok := hm.connMap[MYSQL_UserInfo]
 	if !ok {
 		conn1, err := sql.Open("mysql", "root:ball2305@tcp(localhost:3306)/englishwordgame")

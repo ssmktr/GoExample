@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func (hm *httpManager) httpHandle_Auth(res http.ResponseWriter, req *http.Request) {
+func (hm *HttpServerManager) httpHandle_Auth(res http.ResponseWriter, req *http.Request) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 	
@@ -31,7 +31,7 @@ func (hm *httpManager) httpHandle_Auth(res http.ResponseWriter, req *http.Reques
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *httpManager) call_Select_Auth(req req_AuthPacket) (*rsp_AuthPacket, error) {
+func (hm *HttpServerManager) call_Select_Auth(req req_AuthPacket) (*rsp_AuthPacket, error) {
 	rsp := &rsp_AuthPacket{}
 
 	conn, ok := hm.connMap[MYSQL_Accountinfo]
@@ -84,7 +84,7 @@ func (hm *httpManager) call_Select_Auth(req req_AuthPacket) (*rsp_AuthPacket, er
 	return rsp, nil
 }
 
-func (hm *httpManager) call_Insert_Auth(req req_AuthPacket) (*rsp_AuthPacket, error) {
+func (hm *HttpServerManager) call_Insert_Auth(req req_AuthPacket) (*rsp_AuthPacket, error) {
 	rsp := &rsp_AuthPacket{}
 
 	conn, ok := hm.connMap[MYSQL_Accountinfo]

@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (hm *httpManager) httpHandle_Login(res http.ResponseWriter, req *http.Request) {
+func (hm *HttpServerManager) httpHandle_Login(res http.ResponseWriter, req *http.Request) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 	
@@ -30,7 +30,7 @@ func (hm *httpManager) httpHandle_Login(res http.ResponseWriter, req *http.Reque
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *httpManager) call_Select_Login(req req_LoginPacket) (*rsp_LoginPacket, error) {
+func (hm *HttpServerManager) call_Select_Login(req req_LoginPacket) (*rsp_LoginPacket, error) {
 	rsp := &rsp_LoginPacket{}
 	
 	conn, ok := hm.connMap[MYSQL_Accountinfo]

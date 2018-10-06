@@ -16,32 +16,31 @@ const (
 	MYSQL_UserInfo
 )
 
-type httpManager struct {
+type HttpServerManager struct {
 	mtx     sync.Mutex
 	connMap map[mysqlConnDBType]*sql.DB
 }
 
-func New() *httpManager {
-	return &httpManager{
+func New() *HttpServerManager {
+	return &HttpServerManager{
 		connMap: make(map[mysqlConnDBType]*sql.DB),
 	}
 }
 
-func (hm *httpManager) makeMysqlConn(dbType mysqlConnDBType, conn *sql.DB) {
+func (hm *HttpServerManager) makeMysqlConn(dbType mysqlConnDBType, conn *sql.DB) {
 	if _, ok := hm.connMap[dbType]; !ok {
 		hm.connMap[dbType] = conn
 	}
 }
 
-func (hm *httpManager) getMysqlConn(dbType mysqlConnDBType) *sql.DB {
+func (hm *HttpServerManager) getMysqlConn(dbType mysqlConnDBType) *sql.DB {
 	if conn, ok := hm.connMap[dbType]; ok {
 		return conn
 	}
 	return nil
 }
 
-func RunHttpServer() {
-	hm := New()
+func (hm *HttpServerManager) RunHttpServer() {
 	http.HandleFunc("/auth", hm.httpHandle_Auth)
 	http.HandleFunc("/login", hm.httpHandle_Login)
 	http.HandleFunc("/getuserinfo", hm.httpHandle_GetUserInfo)

@@ -1,5 +1,13 @@
 package gamedata
 
+type RTT_ReadTableType int
+
+const (
+	RTT_None RTT_ReadTableType = iota
+	RTT_ReadStart
+	RTT_ReadFinish
+)
+
 type LT_LoginType int
 
 const (
@@ -21,3 +29,4 @@ const (
 	EC_Table_Insert      = 7 // 테이블에 Insert 에러
 	EC_Table_Update      = 8 // 테이블에 Update 에러
 )
+
