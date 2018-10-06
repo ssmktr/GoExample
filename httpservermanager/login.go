@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-func (hm *HttpServerManager) httpHandle_Login(res http.ResponseWriter, req *http.Request) {
+func (hm *HttpServerManager) HttpHandle_Login(res http.ResponseWriter, req *http.Request) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 	
 	data := make([]byte, 2048)
 	n, _ := req.Body.Read(data)
-	var req_pack req_LoginPacket
+	var req_pack Req_LoginPacket
 	json.Unmarshal([]byte(string(data[:n])), &req_pack)
 	
 	fmt.Printf("login req = %v\n", string(data[:n]))
@@ -30,8 +30,8 @@ func (hm *HttpServerManager) httpHandle_Login(res http.ResponseWriter, req *http
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *HttpServerManager) call_Select_Login(req req_LoginPacket) (*rsp_LoginPacket, error) {
-	rsp := &rsp_LoginPacket{}
+func (hm *HttpServerManager) call_Select_Login(req Req_LoginPacket) (*Rsp_LoginPacket, error) {
+	rsp := &Rsp_LoginPacket{}
 	
 	conn, ok := hm.connMap[MYSQL_Accountinfo]
 	if !ok {

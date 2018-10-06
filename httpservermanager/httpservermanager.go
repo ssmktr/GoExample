@@ -3,8 +3,7 @@ package httpservermanager
 import (
 	"database/sql"
 	"github.com/unrolled/render"
-	"net/http"
-	"sync"
+		"sync"
 )
 
 var renderer render.Render
@@ -41,9 +40,9 @@ func (hm *HttpServerManager) getMysqlConn(dbType mysqlConnDBType) *sql.DB {
 }
 
 func (hm *HttpServerManager) RunHttpServer() {
-	http.HandleFunc("/auth", hm.httpHandle_Auth)
-	http.HandleFunc("/login", hm.httpHandle_Login)
-	http.HandleFunc("/getuserinfo", hm.httpHandle_GetUserInfo)
-	
-	http.ListenAndServe(":2305", nil)
+	// http.HandleFunc("/auth", hm.HttpHandle_Auth)
+	// http.HandleFunc("/login", hm.HttpHandle_Login)
+	// http.HandleFunc("/getuserinfo", hm.HttpHandle_GetUserInfo)
+	//
+	// http.ListenAndServe(":2305", nil)
 }

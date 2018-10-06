@@ -86,10 +86,22 @@ func (gtd *GameTableDataManager) isInSliceData(_data *englishWordData) bool {
 	return false
 }
 
-func (gtd *GameTableDataManager) GetJsonByEnlishWordMap() ([]byte, error) {
-	bytes, err := json.Marshal(gtd.englishWordSlice)
+func (gtd *GameTableDataManager) GetJsonByEnlishWordSlice(idx int) ([]byte, error) {
+	englishWordSlice := []*englishWordData{}
+	totalCount := 200
+	startIdx := idx * totalCount
+	endIdx := startIdx + totalCount
+	
+	for i := startIdx; i < endIdx; i++ {
+		if len(gtd.englishWordSlice) <= i {
+			return nil, fmt.Errorf("Error over idx GetJsonByEnlishWordSlice : %v", i)
+		}
+		englishWordSlice = append(englishWordSlice, gtd.englishWordSlice[i])
+	}
+	
+	bytes, err := json.Marshal(englishWordSlice)
 	if err != nil {
-		return nil, fmt.Errorf("Error GetJsonByEnlishWordMap : %v", err)
+		return nil, fmt.Errorf("Error englishWordSlice : %v", err)
 	}
 	
 	return bytes, err

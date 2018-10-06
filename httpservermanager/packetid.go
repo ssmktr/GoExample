@@ -4,8 +4,20 @@ import (
 	"GoExample/gamedata"
 )
 
+// EnglishWord 데이터 요청
+type Req_EnglishWordData struct {
+	Uid string
+	Idx int
+}
+
+// EnglishWord 데이터 응답
+type Rsp_EnglishWordData struct {
+	Error gamedata.EC_ErrorCode
+	Datas string
+}
+
 // 계정 인증 요청
-type req_AuthPacket struct {
+type Req_AuthPacket struct {
 	Uid       string
 	Id        string
 	NickName  string
@@ -13,7 +25,7 @@ type req_AuthPacket struct {
 }
 
 // 계정 인증 응답
-type rsp_AuthPacket struct {
+type Rsp_AuthPacket struct {
 	Error         gamedata.EC_ErrorCode
 	Uid           string
 	Id            string
@@ -22,14 +34,14 @@ type rsp_AuthPacket struct {
 }
 
 // 로그인 요청
-type req_LoginPacket struct {
+type Req_LoginPacket struct {
 	Uid       string
 	Id        string
 	LoginType gamedata.LT_LoginType
 }
 
 // 로그인 응답
-type rsp_LoginPacket struct {
+type Rsp_LoginPacket struct {
 	Error         gamedata.EC_ErrorCode
 	Uid           string
 	Id            string
@@ -38,12 +50,12 @@ type rsp_LoginPacket struct {
 }
 
 // 유저 정보 요청
-type req_GetUserInfoPacket struct {
+type Req_GetUserInfoPacket struct {
 	Uid string
 }
 
 // 유저 정보 응답
-type rsp_GetUserInfoPacket struct {
+type Rsp_GetUserInfoPacket struct {
 	Error    gamedata.EC_ErrorCode
 	NickName string
 	Energy   int

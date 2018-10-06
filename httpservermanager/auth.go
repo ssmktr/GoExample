@@ -9,13 +9,13 @@ import (
 	"time"
 )
 
-func (hm *HttpServerManager) httpHandle_Auth(res http.ResponseWriter, req *http.Request) {
+func (hm *HttpServerManager) HttpHandle_Auth(res http.ResponseWriter, req *http.Request) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 	
 	data := make([]byte, 2048)
 	n, _ := req.Body.Read(data)
-	var req_pack req_AuthPacket
+	var req_pack Req_AuthPacket
 	json.Unmarshal([]byte(string(data[:n])), &req_pack)
 
 	fmt.Printf("auth req = %v\n", string(data[:n]))
@@ -31,8 +31,8 @@ func (hm *HttpServerManager) httpHandle_Auth(res http.ResponseWriter, req *http.
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *HttpServerManager) call_Select_Auth(req req_AuthPacket) (*rsp_AuthPacket, error) {
-	rsp := &rsp_AuthPacket{}
+func (hm *HttpServerManager) call_Select_Auth(req Req_AuthPacket) (*Rsp_AuthPacket, error) {
+	rsp := &Rsp_AuthPacket{}
 
 	conn, ok := hm.connMap[MYSQL_Accountinfo]
 	if !ok {
@@ -84,8 +84,8 @@ func (hm *HttpServerManager) call_Select_Auth(req req_AuthPacket) (*rsp_AuthPack
 	return rsp, nil
 }
 
-func (hm *HttpServerManager) call_Insert_Auth(req req_AuthPacket) (*rsp_AuthPacket, error) {
-	rsp := &rsp_AuthPacket{}
+func (hm *HttpServerManager) call_Insert_Auth(req Req_AuthPacket) (*Rsp_AuthPacket, error) {
+	rsp := &Rsp_AuthPacket{}
 
 	conn, ok := hm.connMap[MYSQL_Accountinfo]
 	if !ok {

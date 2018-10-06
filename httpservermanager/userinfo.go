@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-func (hm *HttpServerManager) httpHandle_GetUserInfo(res http.ResponseWriter, req *http.Request) {
+func (hm *HttpServerManager) HttpHandle_GetUserInfo(res http.ResponseWriter, req *http.Request) {
 	hm.mtx.Lock()
 	defer hm.mtx.Unlock()
 	
 	data := make([]byte, 2048)
 	n, _ := req.Body.Read(data)
-	var req_pack req_GetUserInfoPacket
+	var req_pack Req_GetUserInfoPacket
 	json.Unmarshal([]byte(string(data[:n])), &req_pack)
 	
 	fmt.Printf("userinfo req = %v\n", string(data[:n]))
@@ -30,8 +30,8 @@ func (hm *HttpServerManager) httpHandle_GetUserInfo(res http.ResponseWriter, req
 	renderer.Data(res, http.StatusOK, bytes)
 }
 
-func (hm *HttpServerManager) call_Select_UserInfo(req req_GetUserInfoPacket) (*rsp_GetUserInfoPacket, error) {
-	rsp := &rsp_GetUserInfoPacket{}
+func (hm *HttpServerManager) call_Select_UserInfo(req Req_GetUserInfoPacket) (*Rsp_GetUserInfoPacket, error) {
+	rsp := &Rsp_GetUserInfoPacket{}
 	
 	conn, ok := hm.connMap[MYSQL_UserInfo]
 	if !ok {
