@@ -56,8 +56,6 @@ func (gtd *GameTableDataManager) RunGameTableDataServer(_callback func()) {
 	if (_callback != nil) {
 		_callback()
 	}
-	
-	// http.HandleFunc("/load_englishworddata", gtd.HttpHandle_load_englishworddata)
 }
 
 func (gtd *GameTableDataManager) HttpHandle_load_englishworddata(res http.ResponseWriter, req *http.Request) {
