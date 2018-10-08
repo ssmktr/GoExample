@@ -67,9 +67,10 @@ type Req_GetUserInfoPacket struct {
 
 // 유저 정보 응답
 type Rsp_GetUserInfoPacket struct {
-	Error    gamedata.EC_ErrorCode
-	NickName string
-	Energy   int
-	Gold     int
-	Heart    int
+	Error        gamedata.EC_ErrorCode
+	NickName     string
+	AlphabatType int8
+	Energy       int
+	Gold         int
+	Heart        int
 }

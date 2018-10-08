@@ -51,7 +51,7 @@ func (hm *HttpServerManager) call_Select_UserInfo(req Req_GetUserInfoPacket) (*R
 	}
 	defer tx.Rollback()
 	
-	rows, err := conn.Query("select nickname, energy, gold, heart from userinfo where uid=?", req.Uid)
+	rows, err := conn.Query("select nickname, alphabattype, energy, gold, heart from userinfo where uid=?", req.Uid)
 	if err != nil {
 		rsp.Error = gamedata.EC_UnknownError
 		return rsp, fmt.Errorf("userinfo error mysql select : %v", err)
@@ -59,7 +59,7 @@ func (hm *HttpServerManager) call_Select_UserInfo(req Req_GetUserInfoPacket) (*R
 	
 	rowCnt := 0
 	for rows.Next() {
-		err := rows.Scan(&rsp.NickName, &rsp.Energy, &rsp.Gold, &rsp.Heart)
+		err := rows.Scan(&rsp.NickName, &rsp.AlphabatType, &rsp.Energy, &rsp.Gold, &rsp.Heart)
 		if err != nil {
 			rsp.Error = gamedata.EC_UnknownError
 			fmt.Println(err)
@@ -93,9 +93,10 @@ func (hm *HttpServerManager) call_Insert_UserInfo(uid, nickname string) error {
 	}
 	defer tx.Rollback()
 	
-	result, err := conn.Exec("insert into userinfo (uid, nickname, energy, gold, heart) values (?, ?, ?, ?, ?)",
+	result, err := conn.Exec("insert into userinfo (uid, nickname, alphabattype, energy, gold, heart) values (?, ?, ?, ?, ?, ?)",
 		uid,
 		nickname,
+		0,
 		10,
 		1000,
 		0,
