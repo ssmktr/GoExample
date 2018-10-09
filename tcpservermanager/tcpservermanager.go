@@ -12,24 +12,41 @@ var bufferSize int
 type TcpServerManager struct {
 	mtx sync.Mutex
 	
-	connMap map[int][]net.Conn // [channel]
+	connMap map[int]map[net.Conn]bool // [channel][conn]
 }
 
 func New() *TcpServerManager {
 	return &TcpServerManager{
-		connMap: make(map[int][]net.Conn),
+		connMap: make(map[int]map[net.Conn]bool),
 	}
 }
 
 func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
+	if _, ok := tm.connMap[_channel]; !ok {
+		tm.connMap[_channel] = make(map[net.Conn]bool)
+	}
+	
 	if(len(tm.connMap[_channel]) >= 50) {
 		fmt.Println("Error empty channel max count 50")
 		return
 	}
 	
-	tm.connMap[_channel] = append(tm.connMap[_channel], _conn)
+	if _, ok := tm.connMap[_channel][_conn]; ok {
+		return
+	}
+	
+	tm.connMap[_channel][_conn] = true
 	go tm.onRead(_conn)
 	go tm.onWrite(_conn)
+}
+
+func (tm *TcpServerManager) leaveConn(_conn net.Conn) {
+	for cha, conns := range tm.connMap {
+		if _, ok := tm.connMap[cha][_conn]; ok {
+			delete(conns, _conn)
+			break
+		}
+	}
 }
 
 func (tm *TcpServerManager) onServer() {
@@ -58,11 +75,14 @@ func (tm *TcpServerManager) onServer() {
 
 func (tm *TcpServerManager) onRead(conn net.Conn) {
 	data := make([]byte, bufferSize)
+	fmt.Println(len(tm.connMap[1]))
 	for {
 		n, err := conn.Read(data)
 		if err != nil {
 			if err.Error() == "EOF" {
 				fmt.Printf("Discconect Conn : %v\n", err.Error())
+				tm.leaveConn(conn)
+				fmt.Println(len(tm.connMap[1]))
 				return
 			}
 			
