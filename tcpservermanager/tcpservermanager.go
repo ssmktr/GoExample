@@ -11,13 +11,28 @@ var bufferSize int
 
 type TcpServerManager struct {
 	mtx sync.Mutex
+	
+	connMap map[int][]net.Conn // [channel]
 }
 
 func New() *TcpServerManager {
-	return &TcpServerManager{}
+	return &TcpServerManager{
+		connMap: make(map[int][]net.Conn),
+	}
 }
 
-func onServer() {
+func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
+	if(len(tm.connMap[_channel]) >= 50) {
+		fmt.Println("Error empty channel max count 50")
+		return
+	}
+	
+	tm.connMap[_channel] = append(tm.connMap[_channel], _conn)
+	go tm.onRead(_conn)
+	go tm.onWrite(_conn)
+}
+
+func (tm *TcpServerManager) onServer() {
 	bufferSize = 4096
 	
 	listener, err := net.Listen("tcp", ":2306")
@@ -37,12 +52,11 @@ func onServer() {
 		
 		fmt.Printf("Connect remoteAddr : %v, localAddr : %v\n", conn.RemoteAddr().String(), conn.LocalAddr().String())
 		
-		go onRead(conn)
-		go onWrite(conn)
+		tm.addConn(1, conn)
 	}
 }
 
-func onRead(conn net.Conn) {
+func (tm *TcpServerManager) onRead(conn net.Conn) {
 	data := make([]byte, bufferSize)
 	for {
 		n, err := conn.Read(data)
@@ -60,7 +74,7 @@ func onRead(conn net.Conn) {
 	}
 }
 
-func onWrite(conn net.Conn) {
+func (tm *TcpServerManager) onWrite(conn net.Conn) {
 	for {
 		if len(message) <= 0 {
 			continue
@@ -79,5 +93,5 @@ func onWrite(conn net.Conn) {
 }
 
 func (tm *TcpServerManager) RunTcpManager() {
-	go onServer()
+	go tm.onServer()
 }
