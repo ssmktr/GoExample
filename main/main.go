@@ -4,6 +4,7 @@ import (
 	"GoExample/gametabledata"
 	"GoExample/httpservermanager"
 	"GoExample/tcpservermanager"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
 )
@@ -36,5 +37,7 @@ func main() {
 		http.HandleFunc("/getuserinfo", gm.httpServerManager.HttpHandle_GetUserInfo)
 		
 		http.ListenAndServe(":2305", nil)
+		
+		fmt.Println("Start Http Server...")
 	})
 }

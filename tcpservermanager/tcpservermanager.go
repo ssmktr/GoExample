@@ -26,7 +26,7 @@ func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
 		tm.connMap[_channel] = make(map[net.Conn]bool)
 	}
 	
-	if(len(tm.connMap[_channel]) >= 50) {
+	if (len(tm.connMap[_channel]) >= 50) {
 		fmt.Println("Error empty channel max count 50")
 		return
 	}
@@ -58,6 +58,8 @@ func (tm *TcpServerManager) onServer() {
 		return
 	}
 	defer listener.Close()
+	
+	fmt.Println("Start Tcp Server...")
 	
 	for {
 		conn, err := listener.Accept()
