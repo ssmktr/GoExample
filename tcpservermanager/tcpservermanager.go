@@ -26,14 +26,20 @@ func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
 		tm.connMap[_channel] = make(map[net.Conn]bool)
 	}
 	
+	fmt.Println("===========11")
+	
 	if (len(tm.connMap[_channel]) >= 50) {
 		fmt.Println("Error empty channel max count 50")
 		return
 	}
 	
+	fmt.Println("===========22")
+	
 	if _, ok := tm.connMap[_channel][_conn]; ok {
 		return
 	}
+	
+	fmt.Println("===========33")
 	
 	tm.connMap[_channel][_conn] = true
 	go tm.onRead(_conn)
