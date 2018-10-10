@@ -14,6 +14,8 @@ type TcpServerManager struct {
 	mtx sync.Mutex
 	
 	ConnMap map[int]map[*user.User]bool // [channel][User]
+	
+	iGameManager gameinterfacegroup.IGameManager
 }
 
 func New() *TcpServerManager {

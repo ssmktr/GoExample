@@ -20,3 +20,15 @@ func (gm *GameManager) New() {
 	gm.HttpServerManager = httpservermanager.New()
 	gm.TcpServerManager = tcpservermanager.New()
 }
+
+func (gm *GameManager) GetGameTableManager() *gametabledata.GameTableDataManager {
+	return gm.GameTableManager
+}
+
+func (gm *GameManager) GetHttpServerManager() *httpservermanager.HttpServerManager {
+	return gm.HttpServerManager
+}
+
+func (gm *GameManager) GetTcpServerManager() *tcpservermanager.TcpServerManager {
+	return gm.TcpServerManager
+}
