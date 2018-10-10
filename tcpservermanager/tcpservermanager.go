@@ -82,9 +82,15 @@ func (tm *TcpServerManager) onServer() {
 }
 
 func (tm *TcpServerManager) onRead(conn net.Conn) {
+	
+	fmt.Println("==========44")
+	
 	data := make([]byte, bufferSize)
 	fmt.Println(len(tm.connMap[1]))
 	for {
+		
+		fmt.Println("==========55")
+		
 		n, err := conn.Read(data)
 		if err != nil {
 			if err.Error() == "EOF" {
