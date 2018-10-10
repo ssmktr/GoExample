@@ -37,12 +37,20 @@ func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
 	
 	tm.connMap[_channel][_conn] = true
 	
+	tm.test()
+	
 	go func() {
 		fmt.Println("=======111")
 	}()
 	
+	tm.test()
+	
 	go tm.onRead(_conn)
 	go tm.onWrite(_conn)
+}
+
+func (tm *TcpServerManager) test() {
+	fmt.Println("==========test")
 }
 
 func (tm *TcpServerManager) leaveConn(_conn net.Conn) {
