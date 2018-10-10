@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"time"
 )
 
 var message string
@@ -102,6 +103,8 @@ func (tm *TcpServerManager) onRead(conn net.Conn) {
 		}
 		message = string(data[:n])
 		fmt.Printf("Read : %v\n", message)
+		
+		time.Sleep(time.Second * 1)
 	}
 }
 
@@ -120,6 +123,8 @@ func (tm *TcpServerManager) onWrite(conn net.Conn) {
 		
 		fmt.Printf("Write : %v\n", message)
 		message = ""
+		
+		time.Sleep(time.Second * 1)
 	}
 }
 
