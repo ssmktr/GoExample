@@ -42,6 +42,9 @@ func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
 	fmt.Println("===========33")
 	
 	tm.connMap[_channel][_conn] = true
+	
+	fmt.Println("==========44")
+	
 	go tm.onRead(_conn)
 	go tm.onWrite(_conn)
 }
@@ -83,13 +86,13 @@ func (tm *TcpServerManager) onServer() {
 
 func (tm *TcpServerManager) onRead(conn net.Conn) {
 	
-	fmt.Println("==========44")
+	fmt.Println("==========111")
 	
 	data := make([]byte, bufferSize)
 	fmt.Println(len(tm.connMap[1]))
 	for {
 		
-		fmt.Println("==========55")
+		fmt.Println("==========222")
 		
 		n, err := conn.Read(data)
 		if err != nil {
