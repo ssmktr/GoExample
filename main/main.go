@@ -36,8 +36,8 @@ func main() {
 		http.HandleFunc("/login", gm.httpServerManager.HttpHandle_Login)
 		http.HandleFunc("/getuserinfo", gm.httpServerManager.HttpHandle_GetUserInfo)
 		
-		http.ListenAndServe(":2305", nil)
-		
 		fmt.Println("Start Http Server...")
+		
+		http.ListenAndServe(":2305", nil)
 	})
 }
