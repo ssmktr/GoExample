@@ -38,7 +38,7 @@ func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
 	
 	tm.connMap[_channel][_conn] = true
 	
-	tm.onRead(_conn)
+	go tm.onRead(_conn)
 	tm.onWrite(_conn)
 }
 
@@ -103,8 +103,6 @@ func (tm *TcpServerManager) onRead(conn net.Conn) {
 		}
 		message = string(data[:n])
 		fmt.Printf("Read : %v\n", message)
-		
-		time.Sleep(time.Second * 1)
 	}
 }
 
@@ -123,8 +121,6 @@ func (tm *TcpServerManager) onWrite(conn net.Conn) {
 		
 		fmt.Printf("Write : %v\n", message)
 		message = ""
-		
-		time.Sleep(time.Second * 1)
 	}
 }
 
