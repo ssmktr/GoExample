@@ -26,24 +26,16 @@ func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
 		tm.connMap[_channel] = make(map[net.Conn]bool)
 	}
 	
-	fmt.Println("===========11")
-	
 	if (len(tm.connMap[_channel]) >= 50) {
 		fmt.Println("Error empty channel max count 50")
 		return
 	}
 	
-	fmt.Println("===========22")
-	
 	if _, ok := tm.connMap[_channel][_conn]; ok {
 		return
 	}
 	
-	fmt.Println("===========33")
-	
 	tm.connMap[_channel][_conn] = true
-	
-	fmt.Println("==========44")
 	
 	go tm.onRead(_conn)
 	go tm.onWrite(_conn)
@@ -88,26 +80,26 @@ func (tm *TcpServerManager) onRead(conn net.Conn) {
 	
 	fmt.Println("==========111")
 	
-	data := make([]byte, bufferSize)
+	// data := make([]byte, bufferSize)
 	fmt.Println(len(tm.connMap[1]))
 	for {
 		
 		fmt.Println("==========222")
 		
-		n, err := conn.Read(data)
-		if err != nil {
-			if err.Error() == "EOF" {
-				fmt.Printf("Discconect Conn : %v\n", err.Error())
-				tm.leaveConn(conn)
-				fmt.Println(len(tm.connMap[1]))
-				return
-			}
-			
-			fmt.Printf("Error Read : %v\n", err)
-			return
-		}
-		message = string(data[:n])
-		fmt.Printf("Read : %v\n", message)
+		// n, err := conn.Read(data)
+		// if err != nil {
+		// 	if err.Error() == "EOF" {
+		// 		fmt.Printf("Discconect Conn : %v\n", err.Error())
+		// 		tm.leaveConn(conn)
+		// 		fmt.Println(len(tm.connMap[1]))
+		// 		return
+		// 	}
+		//
+		// 	fmt.Printf("Error Read : %v\n", err)
+		// 	return
+		// }
+		// message = string(data[:n])
+		// fmt.Printf("Read : %v\n", message)
 	}
 }
 
