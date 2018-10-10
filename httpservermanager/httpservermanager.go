@@ -1,9 +1,10 @@
 package httpservermanager
 
 import (
+	"GoExample/gameinterfacegroup"
 	"database/sql"
 	"github.com/unrolled/render"
-		"sync"
+	"sync"
 )
 
 var renderer render.Render
@@ -14,6 +15,8 @@ const (
 	MYSQL_Accountinfo mysqlConnDBType = iota
 	MYSQL_UserInfo
 )
+
+var _ gameinterfacegroup.IHttpServerManager = &HttpServerManager{}
 
 type HttpServerManager struct {
 	mtx     sync.Mutex

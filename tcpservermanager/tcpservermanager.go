@@ -1,58 +1,62 @@
 package tcpservermanager
 
 import (
+	"GoExample/gameinterfacegroup"
+	"GoExample/user"
 	"fmt"
 	"net"
 	"sync"
 )
 
-var message string
-var bufferSize int
+var _ gameinterfacegroup.ITcpServerManager = &TcpServerManager{}
 
 type TcpServerManager struct {
 	mtx sync.Mutex
 	
-	connMap map[int]map[net.Conn]bool // [channel][conn]
+	ConnMap map[int]map[*user.User]bool // [channel][User]
 }
 
 func New() *TcpServerManager {
 	return &TcpServerManager{
-		connMap: make(map[int]map[net.Conn]bool),
+		ConnMap: make(map[int]map[*user.User]bool),
 	}
 }
 
-func (tm *TcpServerManager) addConn(_channel int, _conn net.Conn) {
-	if _, ok := tm.connMap[_channel]; !ok {
-		tm.connMap[_channel] = make(map[net.Conn]bool)
+func (tm *TcpServerManager) addConn(_channel int, _user *user.User) {
+	if _, ok := tm.ConnMap[_channel]; !ok {
+		tm.ConnMap[_channel] = make(map[*user.User]bool)
 	}
 	
-	if (len(tm.connMap[_channel]) >= 50) {
+	if (len(tm.ConnMap[_channel]) >= 50) {
 		fmt.Println("Error empty channel max count 50")
 		return
 	}
 	
-	if _, ok := tm.connMap[_channel][_conn]; ok {
+	if _, ok := tm.ConnMap[_channel][_user]; ok {
 		return
 	}
 	
-	tm.connMap[_channel][_conn] = true
-	
-	go tm.onRead(_conn)
-	tm.onWrite(_conn)
+	tm.ConnMap[_channel][_user] = true
 }
 
-func (tm *TcpServerManager) leaveConn(_conn net.Conn) {
-	for cha, conns := range tm.connMap {
-		if _, ok := tm.connMap[cha][_conn]; ok {
-			delete(conns, _conn)
+func (tm *TcpServerManager) LeaveConn(_user *user.User) {
+	for cha, conns := range tm.ConnMap {
+		if _, ok := tm.ConnMap[cha][_user]; ok {
+			delete(conns, _user)
 			break
 		}
 	}
 }
 
-func (tm *TcpServerManager) onServer() {
-	bufferSize = 4096
+func (tm *TcpServerManager) getUserCountByChannel(_channel int) int {
+	if conns, ok := tm.ConnMap[_channel]; ok {
+		return len(conns)
+	}
 	
+	return 0
+}
+
+func (tm *TcpServerManager) onServer() {
 	listener, err := net.Listen("tcp", ":2306")
 	if err != nil {
 		fmt.Printf("Error listen : %v\n", err)
@@ -72,54 +76,9 @@ func (tm *TcpServerManager) onServer() {
 		
 		fmt.Printf("Connect remoteAddr : %v, localAddr : %v\n", conn.RemoteAddr().String(), conn.LocalAddr().String())
 		
-		tm.addConn(1, conn)
-	}
-}
-
-func (tm *TcpServerManager) getUserCountByChannel(_channel int) int {
-	if conns, ok := tm.connMap[_channel]; ok {
-		return len(conns)
-	}
-	
-	return 0
-}
-
-func (tm *TcpServerManager) onRead(conn net.Conn) {
-	data := make([]byte, bufferSize)
-	fmt.Println(tm.getUserCountByChannel(1))
-	for {
-		n, err := conn.Read(data)
-		if err != nil {
-			if err.Error() == "EOF" {
-				fmt.Printf("Discconect Conn : %v\n", err.Error())
-				tm.leaveConn(conn)
-				fmt.Println(tm.getUserCountByChannel(1))
-				return
-			}
-			
-			fmt.Printf("Error Read : %v\n", err)
-			return
-		}
-		message = string(data[:n])
-		fmt.Printf("Read : %v\n", message)
-	}
-}
-
-func (tm *TcpServerManager) onWrite(conn net.Conn) {
-	for {
-		if len(message) <= 0 {
-			continue
-		}
-		
-		data := []byte(message)
-		_, err := conn.Write(data)
-		if err != nil {
-			fmt.Printf("Error Write : %v\n", err)
-			return
-		}
-		
-		fmt.Printf("Write : %v\n", message)
-		message = ""
+		user := user.New(conn, 1)
+		user.Initialize()
+		tm.addConn(1, user)
 	}
 }
 
