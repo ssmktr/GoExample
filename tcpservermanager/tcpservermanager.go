@@ -76,30 +76,32 @@ func (tm *TcpServerManager) onServer() {
 	}
 }
 
+func (tm *TcpServerManager) getUserCountByChannel(_channel int) int {
+	if conns, ok := tm.connMap[_channel]; ok {
+		return len(conns)
+	}
+	
+	return 0
+}
+
 func (tm *TcpServerManager) onRead(conn net.Conn) {
-	
-	fmt.Println("==========111")
-	
-	// data := make([]byte, bufferSize)
-	fmt.Println(len(tm.connMap[1]))
+	data := make([]byte, bufferSize)
+	fmt.Println(tm.getUserCountByChannel(1))
 	for {
-		
-		fmt.Println("==========222")
-		
-		// n, err := conn.Read(data)
-		// if err != nil {
-		// 	if err.Error() == "EOF" {
-		// 		fmt.Printf("Discconect Conn : %v\n", err.Error())
-		// 		tm.leaveConn(conn)
-		// 		fmt.Println(len(tm.connMap[1]))
-		// 		return
-		// 	}
-		//
-		// 	fmt.Printf("Error Read : %v\n", err)
-		// 	return
-		// }
-		// message = string(data[:n])
-		// fmt.Printf("Read : %v\n", message)
+		n, err := conn.Read(data)
+		if err != nil {
+			if err.Error() == "EOF" {
+				fmt.Printf("Discconect Conn : %v\n", err.Error())
+				tm.leaveConn(conn)
+				fmt.Println(tm.getUserCountByChannel(1))
+				return
+			}
+			
+			fmt.Printf("Error Read : %v\n", err)
+			return
+		}
+		message = string(data[:n])
+		fmt.Printf("Read : %v\n", message)
 	}
 }
 
