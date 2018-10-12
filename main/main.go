@@ -1,7 +1,6 @@
 package main
 
 import (
-	"GoExample/gameinterfacegroup"
 	"GoExample/gamemanager"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -11,9 +10,8 @@ import (
 func main() {
 	gm := &gamemanager.GameManager{}
 	gm.New()
-	igm := gameinterfacegroup.IGameManager(gm)
 	
-	igm.GetGameTableManager().RunGameTableDataServer(func() {
+	gm.GetGameTableManager().RunGameTableDataServer(func() {
 		gm.HttpServerManager.RunHttpServer()
 		gm.TcpServerManager.RunTcpManager()
 		

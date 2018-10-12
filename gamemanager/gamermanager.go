@@ -1,13 +1,10 @@
 package gamemanager
 
 import (
-	"GoExample/gameinterfacegroup"
 	"GoExample/gametabledata"
 	"GoExample/httpservermanager"
 	"GoExample/tcpservermanager"
 )
-
-var _ gameinterfacegroup.IGameManager = &GameManager{}
 
 type GameManager struct {
 	GameTableManager  *gametabledata.GameTableDataManager

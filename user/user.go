@@ -2,13 +2,10 @@ package user
 
 import (
 	"GoExample/gamedata"
-	"GoExample/gameinterfacegroup"
-		"fmt"
+	"fmt"
 	"net"
 	"sync"
 )
-
-var _ gameinterfacegroup.IUser = &User{}
 
 type User struct {
 	mtx     sync.Mutex
@@ -19,8 +16,8 @@ type User struct {
 
 func New(_conn net.Conn, _channel int) *User {
 	return &User{
-		conn:        _conn,
-		channel:     _channel,
+		conn:    _conn,
+		channel: _channel,
 	}
 }
 
