@@ -6,8 +6,6 @@ import (
 	"sync"
 )
 
-// var _ itcpserceremanager.ITcpServerManager = &TcpServerManager{}
-
 type TcpServerManager struct {
 	mtx sync.Mutex
 	
@@ -21,6 +19,8 @@ func New() *TcpServerManager {
 }
 
 func (tm *TcpServerManager) addConn(_channel int, _user *User) {
+	fmt.Printf("1. connected user count : %v\n", tm.getUserCountByChannel(1))
+	
 	if _, ok := tm.ConnMap[_channel]; !ok {
 		tm.ConnMap[_channel] = make(map[*User]bool)
 	}
@@ -35,6 +35,8 @@ func (tm *TcpServerManager) addConn(_channel int, _user *User) {
 	}
 	
 	tm.ConnMap[_channel][_user] = true
+	
+	fmt.Printf("2. connected user count : %v\n", tm.getUserCountByChannel(1))
 }
 
 func (tm *TcpServerManager) LeaveConn(_user *User) {
@@ -44,6 +46,8 @@ func (tm *TcpServerManager) LeaveConn(_user *User) {
 			break
 		}
 	}
+	
+	fmt.Printf("3. connected user count : %v\n", tm.getUserCountByChannel(1))
 }
 
 func (tm *TcpServerManager) getUserCountByChannel(_channel int) int {

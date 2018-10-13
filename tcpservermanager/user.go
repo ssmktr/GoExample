@@ -26,7 +26,7 @@ func NewUser(_conn net.Conn, _channel int, _tcpServerManager *TcpServerManager) 
 
 func (u *User) Initialize() {
 	go u.onRead()
-	go u.onRead()
+	go u.onWrite()
 }
 
 func (u *User) onRead() {
@@ -54,6 +54,8 @@ func (u *User) onWrite() {
 			continue
 		}
 		
+		u.Send(u.message)
+		
 		data := []byte(u.message)
 		_, err := u.conn.Write(data)
 		if err != nil {
@@ -67,11 +69,12 @@ func (u *User) onWrite() {
 }
 
 func (u *User) Send(_message string) {
+	message := _message
 	for _cha, _users := range u.tcpServerManager.ConnMap {
 		if _cha == u.channel {
 			for _user, _ := range _users {
 				if u != _user {
-					_user.Receive(_message)
+					_user.Receive(message)
 				}
 			}
 		}
