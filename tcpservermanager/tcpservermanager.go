@@ -1,27 +1,28 @@
 package tcpservermanager
 
 import (
-	"GoExample/user"
 	"fmt"
 	"net"
 	"sync"
 )
 
+// var _ itcpserceremanager.ITcpServerManager = &TcpServerManager{}
+
 type TcpServerManager struct {
 	mtx sync.Mutex
 	
-	ConnMap map[int]map[*user.User]bool // [channel][User]
+	ConnMap map[int]map[*User]bool // [channel][User]
 }
 
 func New() *TcpServerManager {
 	return &TcpServerManager{
-		ConnMap: make(map[int]map[*user.User]bool),
+		ConnMap: make(map[int]map[*User]bool),
 	}
 }
 
-func (tm *TcpServerManager) addConn(_channel int, _user *user.User) {
+func (tm *TcpServerManager) addConn(_channel int, _user *User) {
 	if _, ok := tm.ConnMap[_channel]; !ok {
-		tm.ConnMap[_channel] = make(map[*user.User]bool)
+		tm.ConnMap[_channel] = make(map[*User]bool)
 	}
 	
 	if (len(tm.ConnMap[_channel]) >= 50) {
@@ -36,7 +37,7 @@ func (tm *TcpServerManager) addConn(_channel int, _user *user.User) {
 	tm.ConnMap[_channel][_user] = true
 }
 
-func (tm *TcpServerManager) LeaveConn(_user *user.User) {
+func (tm *TcpServerManager) LeaveConn(_user *User) {
 	for cha, conns := range tm.ConnMap {
 		if _, ok := tm.ConnMap[cha][_user]; ok {
 			delete(conns, _user)
@@ -73,7 +74,7 @@ func (tm *TcpServerManager) onServer() {
 		
 		fmt.Printf("Connect remoteAddr : %v, localAddr : %v\n", conn.RemoteAddr().String(), conn.LocalAddr().String())
 		
-		user := user.New(conn, 1)
+		user := NewUser(conn, 1, tm)
 		user.Initialize()
 		tm.addConn(1, user)
 	}

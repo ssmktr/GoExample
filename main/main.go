@@ -1,26 +1,28 @@
 package main
 
 import (
-	"GoExample/gamemanager"
+		"GoExample/gametabledata"
+	"GoExample/httpservermanager"
+	"GoExample/tcpservermanager"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
 )
 
 func main() {
-	gm := &gamemanager.GameManager{}
-	gm.New()
+	gtm := gametabledata.New()
 	
-	gm.GetGameTableManager().RunGameTableDataServer(func() {
-		gm.HttpServerManager.RunHttpServer()
-		gm.TcpServerManager.RunTcpManager()
+	gtm.RunGameTableDataServer(func() {
+		hsm := httpservermanager.New()
+		tsm := tcpservermanager.New()
+		tsm.RunTcpManager()
 		
-		http.HandleFunc("/load_englishworddata", gm.GameTableManager.HttpHandle_load_englishworddata)
-		http.HandleFunc("/load_localizationdata", gm.GameTableManager.HttpHandle_load_localizationdata)
+		http.HandleFunc("/load_englishworddata", gtm.HttpHandle_load_englishworddata)
+		http.HandleFunc("/load_localizationdata", gtm.HttpHandle_load_localizationdata)
 		
-		http.HandleFunc("/auth", gm.HttpServerManager.HttpHandle_Auth)
-		http.HandleFunc("/login", gm.HttpServerManager.HttpHandle_Login)
-		http.HandleFunc("/getuserinfo", gm.HttpServerManager.HttpHandle_GetUserInfo)
+		http.HandleFunc("/auth", hsm.HttpHandle_Auth)
+		http.HandleFunc("/login", hsm.HttpHandle_Login)
+		http.HandleFunc("/getuserinfo", hsm.HttpHandle_GetUserInfo)
 		
 		fmt.Println("Start Http Server...")
 		

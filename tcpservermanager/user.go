@@ -1,4 +1,4 @@
-package user
+package tcpservermanager
 
 import (
 	"GoExample/gamedata"
@@ -12,12 +12,15 @@ type User struct {
 	conn    net.Conn
 	channel int
 	message string
+	
+	tcpServerManager *TcpServerManager
 }
 
-func New(_conn net.Conn, _channel int) *User {
+func NewUser(_conn net.Conn, _channel int, _tcpServerManager *TcpServerManager) *User {
 	return &User{
-		conn:    _conn,
-		channel: _channel,
+		conn:             _conn,
+		channel:          _channel,
+		tcpServerManager: _tcpServerManager,
 	}
 }
 
@@ -33,7 +36,7 @@ func (u *User) onRead() {
 		if err != nil {
 			if err.Error() == "EOF" {
 				fmt.Printf("Discconect Conn : %v\n", err.Error())
-				// u.gameManager.TcpServerManager.LeaveConn(u)
+				u.tcpServerManager.LeaveConn(u)
 				return
 			}
 			
@@ -63,17 +66,17 @@ func (u *User) onWrite() {
 	}
 }
 
-// func (u *User) Send(_message string) {
-// 	for _cha, _users := range u.gameManager.TcpServerManager.ConnMap {
-// 		if _cha == u.channel {
-// 			for _user, _ := range _users {
-// 				if u != _user {
-// 					_user.Receive(_message)
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+func (u *User) Send(_message string) {
+	for _cha, _users := range u.tcpServerManager.ConnMap {
+		if _cha == u.channel {
+			for _user, _ := range _users {
+				if u != _user {
+					_user.Receive(_message)
+				}
+			}
+		}
+	}
+}
 
 func (u *User) Receive(_message string) {
 	u.message = _message
