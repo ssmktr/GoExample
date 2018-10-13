@@ -1,7 +1,7 @@
 package main
 
 import (
-		"GoExample/gametabledata"
+	"GoExample/gametabledata"
 	"GoExample/httpservermanager"
 	"GoExample/tcpservermanager"
 	"fmt"
