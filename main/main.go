@@ -23,6 +23,7 @@ func main() {
 		http.HandleFunc("/auth", hsm.HttpHandle_Auth)
 		http.HandleFunc("/login", hsm.HttpHandle_Login)
 		http.HandleFunc("/getuserinfo", hsm.HttpHandle_GetUserInfo)
+		http.HandleFunc("/singlegameclearword", hsm.HttpHandle_SingleGameClearWord)
 		
 		fmt.Println("Start Http Server...")
 		

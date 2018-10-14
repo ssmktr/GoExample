@@ -74,3 +74,18 @@ type Rsp_GetUserInfoPacket struct {
 	Gold         int
 	Heart        int
 }
+
+// 싱글게임 클리어 요청
+type Req_SingleGameClearWordPacket struct {
+	Uid              string
+	English          string
+	FastestClearTime float32
+}
+
+// 싱글게임 클리어 응답
+type Rsp_SingleGameClearWordPacket struct {
+	Error            gamedata.EC_ErrorCode
+	English          string
+	ClearCount       int
+	FastestClearTime float32
+}

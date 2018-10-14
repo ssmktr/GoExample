@@ -13,6 +13,7 @@ type mysqlConnDBType int
 const (
 	MYSQL_Accountinfo mysqlConnDBType = iota
 	MYSQL_UserInfo
+	MYSQL_SingleGameClearWord
 )
 
 type HttpServerManager struct {
