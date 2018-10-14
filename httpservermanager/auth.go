@@ -20,7 +20,7 @@ func (hm *HttpServerManager) HttpHandle_Auth(res http.ResponseWriter, req *http.
 
 	fmt.Printf("auth req = %v\n", string(data[:n]))
 
-	res_pack, err := hm.call_Insert_Auth(req_pack)
+	res_pack, err := hm.call_Select_Auth(req_pack)
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -72,13 +72,20 @@ func (hm *HttpServerManager) call_Select_Auth(req Req_AuthPacket) (*Rsp_AuthPack
 
 	if rowsCount == 1 {
 		curDate := time.Now().UTC()
-		result, err := conn.Exec("update accountinfo set lastlogindate=? where id=? && logintype=?", req.Id, req.LoginType)
+		result, err := conn.Exec("update accountinfo set lastlogindate=? where id=? && logintype=?", curDate, req.Id, req.LoginType)
 		if err != nil {
 			rsp.Error = gamedata.EC_UnknownError
 			return rsp, fmt.Errorf("auth error mysql update : %v", err)
 		}
 		_ = result
 		rsp.Lastlogindate = curDate.String()
+	} else if rowsCount == 0 {
+		rsp.Error = gamedata.EC_NotFoundAccount
+		if rsp1, err := hm.call_Insert_Auth(req); err != nil {
+			return rsp, err
+		} else {
+			rsp = rsp1
+		}
 	}
 
 	return rsp, nil
@@ -104,16 +111,10 @@ func (hm *HttpServerManager) call_Insert_Auth(req Req_AuthPacket) (*Rsp_AuthPack
 		return rsp, fmt.Errorf("auth error mysql conn begin : %v", err)
 	}
 	defer tx.Rollback()
-
-	if rsp, err := hm.call_Select_Auth(req); err != nil {
-		if err != nil {
-			rsp.Error = gamedata.EC_UnknownError
-			fmt.Printf("Error mysql select : %v", err)
-			return rsp, fmt.Errorf("auth error mysql select : %v", err)
-		}
-	} else if rsp != nil && rsp.Id != "" {
-		rsp.Error = gamedata.EC_AlreadyAccount
-		return rsp, fmt.Errorf("auth alreay account id : %v, logintype : %v", req.Id, req.LoginType)
+	
+	if req.Uid == "" || req.Id == "" || req.NickName == "" || req.LoginType == gamedata.LT_None {
+		rsp.Error = gamedata.EC_Table_Insert
+		return rsp, fmt.Errorf("auth insert account uid : %v, id : %v, nickname : %v, logintype : %v", req.Uid, req.Id, req.NickName, req.LoginType)
 	}
 
 	curDate := time.Now().UTC()

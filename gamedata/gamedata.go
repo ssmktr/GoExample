@@ -11,6 +11,7 @@ const (
 type LT_LoginType int
 
 const (
+	LT_None     LT_LoginType = 0
 	LT_Guest    LT_LoginType = 1
 	LT_Android  LT_LoginType = 2
 	LT_FaceBook LT_LoginType = 3
@@ -32,5 +33,5 @@ const (
 
 const (
 	TableDataPath = "../gametabledata/"
-	BufferSize = 4096
+	BufferSize    = 4096
 )
